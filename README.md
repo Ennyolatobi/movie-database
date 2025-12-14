@@ -1,39 +1,36 @@
 # 🎬 Movie Database Application
 
-## 📌 Project Overview
-This project is a Movie Database web application that allows users to search for movies and view detailed information about them.
-
-The application was built using HTML, CSS, and JavaScript, and it fetches real movie data from a public API.
-
-This project is part of my Front-End Capstone Project and was built from scratch during the capstone phase.
+A **dynamic multi-page Movie Database website** built with **HTML, CSS, and JavaScript**.  
+Users can search for movies, view detailed information, and manage a list of favorite movies. This project uses the **OMDb API** to fetch movie data in real-time.
 
 ---
 
-## 🚀 Features
-- Search for movies by title
-- View movie posters, titles, and release years
-- Click a movie to see detailed information:
-  - Plot summary
-  - Genre
-  - Actors
-  - IMDb rating
-- Responsive design for desktop and mobile screens
-- Error handling for empty searches and invalid results
+## **Project Features**
+
+### Core Features
+- **Search Movies:** Users can search for movies by title.  
+- **Movie Details Page:** Displays detailed information including plot, genre, actors, ratings, and poster.  
+- **Favorites List:** Users can add/remove movies to a favorites list, stored in `localStorage`.  
+- **Sorting:** Sort search results by **year** or **IMDb rating**.  
+- **Navigation:** Multi-page navigation between Home, Movie Details, and Favorites pages.  
+- **Responsive Design:** Fully functional and responsive on **desktop, tablet, and mobile**.  
+- **Loading Indicators & Error Handling:** Clear feedback for API calls and invalid queries.
+
+### Optional/Extra Features
+- Back button on movie details page  
+- Clean UI layout with hover effects on movie cards  
+- Ready for enhancements such as light/dark mode and YouTube trailers
 
 ---
 
-## 🛠️ Technologies Used
-- HTML5
-- CSS3
-- JavaScript (ES6)
-- Public Movie API (**:contentReference[oaicite:0]{index=0}**)
-- Git & GitHub
+## **Project Structure**
 
----
-
-## 📂 Project Structure
 movie-database/
-├── index.html
-├── style.css
-├── script.js
-└── README.md
+├── index.html ← Search & movie list page
+├── movie.html ← Movie details page
+├── favorites.html ← Favorite movies page
+├── style.css ← Shared CSS for all pages
+├── script.js ← Functions for search, display, and favorites
+├── movie.js ← Functions for movie.html page
+├── favorites.js ← Functions for favorites.html page
+└── README.md ← Project documentation

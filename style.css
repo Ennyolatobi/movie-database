@@ -29,6 +29,20 @@ header {
   width: 250px;
 }
 
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #fff;
+  background-color: #2563eb;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+nav a:hover {
+  background-color: #1d4ed8;
+}
+
+
 .search-section button {
   padding: 10px 15px;
   background-color: #2563eb;
@@ -50,6 +64,11 @@ header {
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
+  transition: transform 0.2s;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
 }
 
 .movie-card img {
@@ -68,6 +87,16 @@ header {
 .movie-details img {
   width: 300px;
   max-width: 100%;
+  margin-bottom: 10px;
+}
+
+button.back-btn {
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
 .hidden {
@@ -78,6 +107,13 @@ header {
   text-align: center;
   color: red;
   margin-top: 10px;
+}
+
+#loading {
+  text-align: center;
+  margin: 20px;
+  font-weight: bold;
+  color: #2563eb;
 }
 
 @media (max-width: 600px) {
