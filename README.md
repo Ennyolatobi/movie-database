@@ -1,36 +1,132 @@
-# 🎬 Movie Database Application
+🎬 Movie Finder
 
-A **dynamic multi-page Movie Database website** built with **HTML, CSS, and JavaScript**.  
-Users can search for movies, view detailed information, and manage a list of favorite movies. This project uses the **OMDb API** to fetch movie data in real-time.
+Movie Finder is a modern, responsive web application that helps users discover trending movies, watch trailers, explore movies by mood and genre, and manage favorites all in one seamless experience.
 
----
+Built with a mobile-first mindset, the app delivers a Netflix-inspired UI with smooth interactions, dark/light mode support, and dynamic movie data powered by the OMDb API.
 
-## **Project Features**
+🚀 Live Demo
 
-### Core Features
-- **Search Movies:** Users can search for movies by title.  
-- **Movie Details Page:** Displays detailed information including plot, genre, actors, ratings, and poster.  
-- **Favorites List:** Users can add/remove movies to a favorites list, stored in `localStorage`.  
-- **Sorting:** Sort search results by **year** or **IMDb rating**.  
-- **Navigation:** Multi-page navigation between Home, Movie Details, and Favorites pages.  
-- **Responsive Design:** Fully functional and responsive on **desktop, tablet, and mobile**.  
-- **Loading Indicators & Error Handling:** Clear feedback for API calls and invalid queries.
+🔗 https://moviefinderbyenny.netlify.app/
 
-### Optional/Extra Features
-- Back button on movie details page  
-- Clean UI layout with hover effects on movie cards  
-- Ready for enhancements such as light/dark mode and YouTube trailers
+✨ Features
 
----
+🔥 Trending Movies
 
-## **Project Structure**
+Discover what’s popular in real-time
 
+🎥 Trailer Preview Section
+
+Interactive movie cards with play overlay
+
+Responsive on mobile, tablet, and desktop
+
+🏆 Trending Leaderboard
+
+Ranked movies with animated UI
+
+Visual hierarchy for top performers
+
+🌍 Popular in Your Area
+
+Location-based movie discovery
+
+Unique layout distinct from trending sections
+
+🎭 Mood & Genre Exploration
+
+Find movies that match your mood
+
+⭐ Favorites System
+
+Save and manage favorite movies
+
+🌗 Light / Dark Mode
+
+Respects system preference
+
+Manual toggle on both desktop & mobile
+
+📱 Mobile-First Navigation
+
+Bottom navigation bar on mobile (Netflix-style)
+
+No hamburger menu confusion
+
+🧩 Responsive Footer
+
+Collapsible sections on mobile
+
+Fully expanded layout on desktop
+
+🛠️ Tech Stack
+
+HTML5
+
+Tailwind CSS
+
+Vanilla JavaScript
+
+OMDb API
+
+LocalStorage (theme & favorites)
+
+📱 Responsive Design
+Device	Experience
+Mobile	Bottom navigation, collapsible footer
+Tablet	Adaptive layouts, touch-friendly
+Desktop	Full navigation, expanded footer
+🎨 UI/UX Highlights
+
+Glassmorphism header with blur
+
+Hover & interaction feedback
+
+Smooth transitions and micro-animations
+
+Clean, modern, Netflix-inspired layout
+
+One-hand friendly mobile navigation
+
+⚙️ Project Structure
 movie-database/
-├── index.html ← Search & movie list page
-├── movie.html ← Movie details page
-├── favorites.html ← Favorite movies page
-├── style.css ← Shared CSS for all pages
-├── script.js ← Functions for search, display, and favorites
-├── movie.js ← Functions for movie.html page
-├── favorites.js ← Functions for favorites.html page
-└── README.md ← Project documentation
+│
+├── index.html
+├── favorites.html
+├── movie.html
+├── js/
+│   ├── main.js
+│   ├── movie.js
+│
+├─ logo-movie-finder.png
+│
+└── README.md
+
+🧠 Key Learnings
+
+Responsive design without heavy JS frameworks
+
+Mobile-first UX patterns
+
+Managing UI state with vanilla JavaScript
+
+API integration and async data handling
+
+Dark mode implementation best practices
+
+👨‍💻 Author
+
+Eniola Omoniyi
+🎓 ALX Frontend Engineering Program
+💡 Passionate about building accessible, user-focused web experiences
+
+🏁 Acknowledgements
+
+ALX Africa — Frontend Engineering Program
+
+OMDb API — Movie data provider
+
+UI inspiration from Netflix, Spotify, and YouTube
+
+⭐️ Show Your Support
+
+If you like this project, give it a star ⭐ and feel free to fork or contribute!

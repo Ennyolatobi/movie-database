@@ -1,36 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Movie Database</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Finder</title>
+
+  <link rel="icon" href="logo-movie-finder.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fade-in 1s ease-out;
+    }
+    .logo-blob {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #6366F1, #4F46E5);
+      border-radius: 45% 55% 60% 40% / 50% 60% 40% 50%; /* organic blob shape */
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s, border-radius 0.5s;
+    }
+
+    .logo-blob:hover {
+      transform: rotate(10deg) scale(1.2);
+      border-radius: 50% 40% 60% 50% / 40% 50% 50% 60%; /* subtle morphing */
+    }
+    .leaderboard-card:hover {
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.25);
+    }
+
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .lb-filter {
+      @apply px-4 py-2 rounded-full border text-gray-500 hover:bg-indigo-600 hover:text-white transition;
+    }
+    .lb-filter.active {
+      @apply bg-indigo-600 text-white;
+    }
+
+  </style>
 </head>
-<body>
 
-  <header>
-    <h1>🎬 Movie Database</h1>
-    <nav>
-      <a href="favorites.html">⭐ Favorites</a>
+<body class="font-[Inter] bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+
+<!-- TOP HEADER: Logo + Desktop/Tablet Nav -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <div class="logo-blob flex items-center justify-center">
+        <img src="logo-movie-finder.png" class="h-10 w-10 object-cover rounded-full"/>
+      </div>
+      <span class="font-extrabold text-lg">Movie Finder</span>
+    </div>
+
+    <!-- Desktop/Tablet Nav -->
+    <nav class="hidden md:flex gap-6 items-center">
+      <a href="#trending" class="hover:text-indigo-600">Trending</a>
+      <a href="#popular" class="hover:text-indigo-600">Popular</a>
+      <a href="favorites.html" class="hover:text-indigo-600">Favorites</a>
+      <a href="#searchSection" class="hover:text-indigo-600">Search</a>
+      <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800">🌙</button>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <section class="search-section">
-      <input type="text" id="searchInput" placeholder="Search for a movie...">
-      <button id="searchBtn">Search</button>
-      <select id="sortSelect">
-        <option value="">Sort By</option>
-        <option value="year">Year</option>
-        <option value="rating">IMDb Rating</option>
-      </select>
-    </section>
+<!-- MOBILE BOTTOM NAV -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t md:hidden">
+  <div class="flex justify-around py-3 text-sm">
+    <a href="#trending" class="flex flex-col items-center gap-1">
+      🔥
+      <span class="text-xs">Trending</span>
+    </a>
 
-    <section id="errorMessage" class="hidden"></section>
-    <section id="loading" class="hidden">Loading...</section>
-    <section id="moviesContainer" class="movies-container"></section>
-  </main>
+     <a href="#popular" class="flex flex-col items-center gap-1">
+      🏆
+      <span class="text-xs">Popular</span>
+    </a>
 
-  <script src="script.js"></script>
+    <a href="#searchSection" class="flex flex-col items-center gap-1">
+      🔍
+      <span class="text-xs">Search</span>
+    </a>
+
+    <a href="favorites.html" class="flex flex-col items-center gap-1">
+      ⭐
+      <span class="text-xs">Favorites</span>
+    </a>
+
+    <button id="themeToggleMobile" class="flex flex-col items-center gap-1">
+      🌙
+      <span class="text-xs">Theme</span>
+    </button>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<section class="relative min-h-[90vh] overflow-hidden bg-black text-white">
+  <!-- Background -->
+  <div class="absolute inset-0">
+    <img
+      src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba"
+      class="w-full h-full object-cover scale-110 blur-[2px]"
+      alt="Cinema background"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-indigo-900/80"></div>
+  </div>
+
+  <!-- Floating glow -->
+  <div class="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/30 rounded-full blur-3xl"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-7xl mx-auto px-6 min-h-[90vh] flex items-center">
+    <div class="max-w-2xl animate-fade-in-up">
+      
+      <!-- Eyebrow -->
+      <p class="text-indigo-400 uppercase tracking-widest font-semibold mb-4">
+        🎬 Your Movie Universe
+      </p>
+
+      <!-- Headline -->
+      <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+        Find movies you’ll<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">
+          actually love watching
+        </span>
+      </h1>
+
+      <!-- Subtext -->
+      <p class="text-lg text-gray-300 mb-10 max-w-xl">
+        Explore trending movies, watch trailers instantly, pick by mood,
+        and discover what’s popular near you all in one place.
+      </p>
+
+      <!-- Search -->
+      <div class="relative">
+        <div class="flex items-center bg-white/95 dark:bg-gray-800 rounded-2xl shadow-2xl p-2">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search movies, series, actors..."
+            class="flex-1 px-4 py-3 bg-transparent text-lg outline-none text-black dark:text-white"
+          />
+          <button
+            id="searchBtn"
+            class="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-xl font-semibold transition"
+          >
+            Search
+          </button>
+        </div>
+
+        <!-- Trust text -->
+        <p class="text-sm text-gray-400 mt-3">
+          🔥 Trending searches update in real-time
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-gray-400 animate-bounce">
+    ↓ Scroll to explore
+  </div>
+</section>
+
+<!-- MOOD PICKER -->
+<section class="max-w-7xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-extrabold mb-8 text-center">
+    What are you in the mood for today?
+  </h2>
+
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+    <button class="mood-card" data-mood="happy">😊 Adventure</button>
+    <button class="mood-card" data-mood="sad">😢 Emotional</button>
+    <button class="mood-card" data-mood="action">💥 Action</button>
+    <button class="mood-card" data-mood="romance">❤️ Romance</button>
+    <button class="mood-card" data-mood="thriller">😱 Thriller</button>
+    <button class="mood-card" data-mood="animation">🎬 Animation</button>
+    <button class="mood-card" data-mood="educational">📚 Educational</button>
+  </div>
+</section>
+
+<style>
+.mood-card{
+  @apply bg-white dark:bg-gray-800 p-6 rounded-xl shadow text-xl font-semibold
+  hover:-translate-y-2 hover:shadow-2xl transition cursor-pointer;
+}
+</style>
+
+<!-- TRENDING -->
+<section id="trending" class="max-w-7xl mx-auto px-6 py-20">
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="text-3xl font-extrabold">🔥 Trending This Week</h2>
+    <div class="flex gap-2">
+      <button onclick="scrollTrending(-300)" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">‹</button>
+      <button onclick="scrollTrending(300)" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">›</button>
+    </div>
+  </div>
+
+  <div id="trendingMovies" class="flex gap-4 overflow-x-auto scroll-smooth pb-4 scrollbar-hide"></div>
+</section>
+
+
+
+<!-- TRAILER PREVIEW -->
+<section class="max-w-7xl mx-auto px-6 py-20">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-extrabold">🎥 Watch Trailers</h2>
+    <div class="flex gap-2">
+      <button onclick="scrollTrailer(-300)" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">‹</button>
+      <button onclick="scrollTrailer(300)" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">›</button>
+    </div>
+  </div>
+
+  <div id="trailerRow" class="flex gap-4 overflow-x-auto scroll-smooth pb-4"></div>
+</section>
+
+<!-- TRAILER MODAL -->
+<div id="trailerModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 hidden z-50">
+  <div class="bg-white dark:bg-gray-900 rounded-xl max-w-2xl w-full p-4 relative">
+    <button id="closeTrailer" class="absolute top-4 right-4 text-gray-700 dark:text-gray-300 text-xl font-bold">×</button>
+    <div id="trailerContent" class="w-full h-64 md:h-96"></div>
+  </div>
+</div>
+
+
+
+
+
+<!-- TOP RATED -->
+<!--<section class="max-w-7xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-extrabold mb-8">⭐ Top Rated by Users</h2>
+  <div id="topRated" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+</section>-->
+
+
+<!-- POPULAR LOCATION -->
+<section id="popular" class="max-w-7xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-extrabold mb-6">
+    Popular in <span id="userLocation">your area</span>
+  </h2>
+
+  <div id="localMovies" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+</section>
+
+
+
+<!-- ================= LEADERBOARD ================= -->
+<section class="max-w-6xl mx-auto px-6 py-20">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+    <h2 class="text-3xl font-extrabold">
+      🏆 Trending Power Rankings
+    </h2>
+
+    <!-- FILTER -->
+    <div class="flex gap-2 text-sm">
+      <button class="lb-filter active">Today</button>
+      <button class="lb-filter">This Week</button>
+      <button class="lb-filter">This Month</button>
+    </div>
+  </div>
+
+  <!-- PODIUM -->
+  <div id="podium" class="grid grid-cols-3 gap-4 mb-10"></div>
+
+  <!-- LIST -->
+  <div id="leaderboard" class="space-y-3"></div>
+</section>
+
+
+<!-- FEATURES -->
+<section class="bg-white dark:bg-gray-900 py-20">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-extrabold text-center mb-16">
+      Everything you need to explore movies 🎬
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-10">
+      <div class="p-8 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:scale-105 transition">
+        <h3 class="font-bold text-xl mb-3">🔍 Powerful Search</h3>
+        <p class="text-gray-500">
+          Instantly find movies and series with real-time results.
+        </p>
+      </div>
+
+      <div class="p-8 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:scale-105 transition">
+        <h3 class="font-bold text-xl mb-3">🎞 Watch Trailers</h3>
+        <p class="text-gray-500">
+          Preview trailers instantly inside the app.
+        </p>
+      </div>
+
+      <div class="p-8 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:scale-105 transition">
+        <h3 class="font-bold text-xl mb-3">🌙 Dark Mode</h3>
+        <p class="text-gray-500">
+          Smooth light & dark experience with saved preference.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GENRES -->
+<!--<section class="max-w-7xl mx-auto px-12 mb-16">
+  <h3 class="font-bold mb-4">Browse by Genre</h3>
+  <div id="genres" class="flex flex-wrap gap-3"></div>
+</section>-->
+
+<!-- HOW IT WORKS -->
+<section class="py-20 bg-gray-100 dark:bg-gray-950">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-3xl font-extrabold text-center mb-12">
+      How Movie Finder Works
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-10 text-center">
+      <div>
+        <span class="text-5xl">⌨️</span>
+        <h3 class="font-bold mt-4">Search</h3>
+        <p class="text-gray-500">Type a movie name or genre</p>
+      </div>
+      <div>
+        <span class="text-5xl">🎥</span>
+        <h3 class="font-bold mt-4">Explore</h3>
+        <p class="text-gray-500">Browse trending & search results</p>
+      </div>
+      <div>
+        <span class="text-5xl">🍿</span>
+        <h3 class="font-bold mt-4">Watch</h3>
+        <p class="text-gray-500">View trailers and details</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH RESULTS  -->
+<section id="searchSection" class="max-w-7xl mx-auto px-6 pb-20">
+  <p id="status" class="mb-6 text-gray-500"></p>
+  <div id="movies" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+</section>
+
+
+
+
+
+
+
+<!-- CTA -->
+<section class="py-24 bg-indigo-600 text-white text-center">
+  <h2 class="text-4xl font-extrabold mb-6">
+    Ready to find your next favorite movie?
+  </h2>
+  <p class="mb-10 text-lg opacity-90">
+    Search thousands of movies instantly.
+  </p>
+  <button onclick="document.getElementById('searchInput').focus()"
+    class="bg-white text-indigo-600 px-10 py-4 rounded-xl font-bold hover:scale-105 transition">
+    Start Exploring
+  </button>
+</section>
+
+
+
+
+<!--  TRAILER MODAL -->
+<div id="trailerModal"
+ class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50">
+  <div class="bg-black rounded-xl w-[90%] md:w-[800px] p-4 relative">
+    <button onclick="closeTrailer()" class="absolute top-2 right-3 text-white text-2xl">×</button>
+    <iframe id="trailerFrame" class="w-full h-[450px]" allowfullscreen></iframe>
+  </div>
+</div>
+
+<footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-6 md:grid md:grid-cols-4 md:gap-12">
+
+    <!-- BRAND -->
+    <div class="footer-section border-b md:border-none pb-4 md:pb-0">
+      <h3 class="text-2xl font-extrabold text-white mb-3 md:mb-4 cursor-pointer flex justify-between items-center md:cursor-default">
+        🎬 Movie Finder
+        <span class="md:hidden">+</span>
+      </h3>
+      <div class="footer-content hidden md:block">
+        <p class="text-sm leading-relaxed text-gray-400">
+          Discover trending movies, watch trailers, explore by mood and genre,
+          and find your next favorite film all in one place.
+        </p>
+      </div>
+    </div>
+
+    <!-- EXPLORE -->
+    <div class="footer-section border-b md:border-none pb-4 md:pb-0">
+      <h4 class="text-white font-semibold mb-3 cursor-pointer flex justify-between items-center md:cursor-default">
+        Explore
+        <span class="md:hidden">+</span>
+      </h4>
+      <ul class="footer-content hidden md:block space-y-2 text-sm">
+        <li><a href="#trending" class="hover:text-indigo-400 transition">Trending</a></li>
+        <li><a href="#genres" class="hover:text-indigo-400 transition">Genres</a></li>
+        <li><a href="#leaderboard" class="hover:text-indigo-400 transition">Leaderboard</a></li>
+        <li><a href="#mood" class="hover:text-indigo-400 transition">Mood Picker</a></li>
+      </ul>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="footer-section border-b md:border-none pb-4 md:pb-0">
+      <h4 class="text-white font-semibold mb-3 cursor-pointer flex justify-between items-center md:cursor-default">
+        Features
+        <span class="md:hidden">+</span>
+      </h4>
+      <ul class="footer-content hidden md:block space-y-2 text-sm">
+        <li class="hover:text-indigo-400 transition cursor-default">🔍 Smart Search</li>
+        <li class="hover:text-indigo-400 transition cursor-default">🎥 Watch Trailers</li>
+        <li class="hover:text-indigo-400 transition cursor-default">⭐ Favorites</li>
+        <li class="hover:text-indigo-400 transition cursor-default">🔥 Trending Movies</li>
+      </ul>
+    </div>
+
+    <!-- BUILT BY -->
+    <div class="footer-section pb-4 md:pb-0">
+      <h4 class="text-white font-semibold mb-3 cursor-pointer flex justify-between items-center md:cursor-default">
+        Built By
+        <span class="md:hidden">+</span>
+      </h4>
+      <div class="footer-content hidden md:block">
+        <p class="text-sm text-gray-400 mb-2">ALX Frontend Capstone Project</p>
+        <p class="text-sm text-gray-400 mb-4">Designed & built by <span class="text-white font-semibold">Eniola Omoniyi</span></p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-indigo-600 transition">🐦</a>
+          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-indigo-600 transition">💼</a>
+          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-indigo-600 transition">🐙</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="mt-12 border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+    © 2025 Movie Finder · Built for ALX Frontend Capstone · Powered by OMDb API
+  </div>
+</footer>
+
+
+
+
+<script src="js/main.js"></script>
 </body>
 </html>

@@ -1,25 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Favorite Movies</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Favorites | Movie Finder</title>
+  <link rel="icon" href="logo-movie-finder.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @keyframes fade-in { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+    .animate-fade-in { animation: fade-in 1s ease-out; }
+    .carousel::-webkit-scrollbar { display: none; }
+    .logo-blob {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #6366F1, #4F46E5);
+      border-radius: 45% 55% 60% 40% / 50% 60% 40% 50%; /* organic blob shape */
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s, border-radius 0.5s;
+    }
+
+    .logo-blob:hover {
+      transform: rotate(10deg) scale(1.2);
+      border-radius: 50% 40% 60% 50% / 40% 50% 50% 60%; /* subtle morphing */
+    }
+
+  </style>
 </head>
-<body>
+<body class="font-[Inter] bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
 
-  <header>
-    <h1>⭐ Favorite Movies</h1>
-    <nav>
-      <a href="index.html">🏠 Home</a>
+<!-- NAV -->
+
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <div class="logo-blob flex items-center justify-center">
+        <img src="logo-movie-finder.png" class="h-10 w-10 object-cover rounded-full"/>
+      </div>
+      <span class="font-extrabold text-lg">Movie Finder</span>
+    </div>
+
+    <!-- Desktop/Tablet Nav -->
+    <nav class="hidden md:flex gap-6 items-center">
+      <a href="index.html" class="hover:text-indigo-600">Home</a>
+      <a href="favorites.html" class="hover:text-indigo-600 font-bold">Favorites</a>
+      <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800">🌙</button>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <section id="favoritesContainer" class="movies-container"></section>
-    <p id="emptyMessage" class="hidden">You have no favorite movies yet.</p>
-  </main>
+<!-- MOBILE BOTTOM NAV -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t md:hidden">
+  <div class="flex justify-around py-3 text-sm">
+    <a href="index.html" class="flex flex-col items-center gap-1">
+      🔥
+      <span class="text-xs">Home</span>
+    </a>
 
-  <script src="favorites.js"></script>
+    <a href="favorites.html" class="flex flex-col items-center gap-1">
+      ⭐
+      <span class="text-xs">Favorites</span>
+    </a>
+
+    <button id="themeToggleMobile" class="flex flex-col items-center gap-1">
+      🌙
+      <span class="text-xs">Theme</span>
+    </button>
+  </div>
+</nav>
+
+
+
+
+<!-- HERO -->
+<section class="max-w-7xl mx-auto px-6 py-16 animate-fade-in">
+  <h1 class="text-4xl font-extrabold mb-6">Your Favorites ❤️</h1>
+  <p class="text-gray-600 dark:text-gray-300 mb-10">
+    All the movies you saved for later. Hover a movie for actions.
+  </p>
+</section>
+
+<!-- FAVORITES CAROUSEL -->
+<section class="max-w-7xl mx-auto px-6 pb-20 relative">
+  <div class="flex justify-between mb-4">
+    <h2 class="text-3xl font-extrabold">Saved Movies</h2>
+    <div class="flex gap-2">
+      <button onclick="scrollFavorites(-300)" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">‹</button>
+      <button onclick="scrollFavorites(300)" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">›</button>
+    </div>
+  </div>
+
+  <div id="favoritesGrid" class="carousel flex gap-6 overflow-x-auto scroll-smooth pb-4 cursor-grab"></div>
+  <p id="emptyMessage" class="text-center text-gray-500 mt-10 hidden">No favorites yet 🎬</p>
+</section>
+
+<!-- TRAILER MODAL -->
+<div id="trailerModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50">
+  <div class="bg-black rounded-xl w-[90%] md:w-[800px] p-4 relative">
+    <button onclick="closeTrailer()" class="absolute top-2 right-3 text-white text-2xl">×</button>
+    <iframe id="trailerFrame" class="w-full h-[450px]" allowfullscreen></iframe>
+  </div>
+</div>
+
+<footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-6 md:grid md:grid-cols-4 md:gap-12">
+
+    <!-- BRAND -->
+    <div class="footer-section border-b md:border-none pb-4 md:pb-0">
+      <h3 class="text-2xl font-extrabold text-white mb-3 md:mb-4 cursor-pointer flex justify-between items-center md:cursor-default">
+        🎬 Movie Finder
+        <span class="md:hidden">+</span>
+      </h3>
+      <div class="footer-content hidden md:block">
+        <p class="text-sm leading-relaxed text-gray-400">
+          Discover trending movies, watch trailers, explore by mood and genre,
+          and find your next favorite film all in one place.
+        </p>
+      </div>
+    </div>
+
+    <!-- EXPLORE -->
+    <div class="footer-section border-b md:border-none pb-4 md:pb-0">
+      <h4 class="text-white font-semibold mb-3 cursor-pointer flex justify-between items-center md:cursor-default">
+        Explore
+        <span class="md:hidden">+</span>
+      </h4>
+      <ul class="footer-content hidden md:block space-y-2 text-sm">
+        <li><a href="#trending" class="hover:text-indigo-400 transition">Trending</a></li>
+        <li><a href="#genres" class="hover:text-indigo-400 transition">Genres</a></li>
+        <li><a href="#leaderboard" class="hover:text-indigo-400 transition">Leaderboard</a></li>
+        <li><a href="#mood" class="hover:text-indigo-400 transition">Mood Picker</a></li>
+      </ul>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="footer-section border-b md:border-none pb-4 md:pb-0">
+      <h4 class="text-white font-semibold mb-3 cursor-pointer flex justify-between items-center md:cursor-default">
+        Features
+        <span class="md:hidden">+</span>
+      </h4>
+      <ul class="footer-content hidden md:block space-y-2 text-sm">
+        <li class="hover:text-indigo-400 transition cursor-default">🔍 Smart Search</li>
+        <li class="hover:text-indigo-400 transition cursor-default">🎥 Watch Trailers</li>
+        <li class="hover:text-indigo-400 transition cursor-default">⭐ Favorites</li>
+        <li class="hover:text-indigo-400 transition cursor-default">🔥 Trending Movies</li>
+      </ul>
+    </div>
+
+    <!-- BUILT BY -->
+    <div class="footer-section pb-4 md:pb-0">
+      <h4 class="text-white font-semibold mb-3 cursor-pointer flex justify-between items-center md:cursor-default">
+        Built By
+        <span class="md:hidden">+</span>
+      </h4>
+      <div class="footer-content hidden md:block">
+        <p class="text-sm text-gray-400 mb-2">ALX Frontend Capstone Project</p>
+        <p class="text-sm text-gray-400 mb-4">Designed & built by <span class="text-white font-semibold">Eniola Omoniyi</span></p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-indigo-600 transition">🐦</a>
+          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-indigo-600 transition">💼</a>
+          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-indigo-600 transition">🐙</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="mt-12 border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+    © 2025 Movie Finder · Built for ALX Frontend Capstone · Powered by OMDb API
+  </div>
+</footer>
+
+<script>
+/* ================= THEME ================= */
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.onclick = () => {
+  document.documentElement.classList.toggle("dark");
+  localStorage.setItem("theme", document.documentElement.classList.contains("dark") ? "dark" : "light");
+};
+if (localStorage.getItem("theme") === "dark") document.documentElement.classList.add("dark");
+
+/* ================= FAVORITES ================= */
+const favoritesGrid = document.getElementById("favoritesGrid");
+const emptyMessage = document.getElementById("emptyMessage");
+
+function loadFavorites() {
+  const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+  if (favs.length === 0) {
+    emptyMessage.classList.remove("hidden");
+    favoritesGrid.innerHTML = "";
+    return;
+  }
+  emptyMessage.classList.add("hidden");
+
+  favoritesGrid.innerHTML = favs.map(movie => `
+    <div class="relative min-w-[200px] group cursor-pointer">
+      <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300'}" 
+           class="h-72 w-full object-cover rounded-xl shadow-lg"/>
+      <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex flex-col justify-end p-4 rounded-xl">
+        <h3 class="font-bold text-white">${movie.Title}</h3>
+        <p class="text-sm text-gray-200 mb-2">⭐ ${movie.Year}</p>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="removeFavorite('${movie.imdbID}')" class="px-3 py-1 bg-red-600 rounded text-white hover:bg-red-700 transition">Remove</button>
+          <button onclick="location.href='movie.html?id=${movie.imdbID}'" class="px-3 py-1 bg-indigo-600 rounded text-white hover:bg-indigo-700 transition">Details</button>
+          <button onclick="openTrailer('${movie.Title}')" class="px-3 py-1 bg-green-600 rounded text-white hover:bg-green-700 transition">Trailer</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function removeFavorite(id) {
+  let favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+  favs = favs.filter(m => m.imdbID !== id);
+  localStorage.setItem("favorites", JSON.stringify(favs));
+  loadFavorites();
+}
+
+/* ================= CAROUSEL SCROLL ================= */
+function scrollFavorites(amount) {
+  favoritesGrid.scrollLeft += amount;
+}
+
+/* Drag to scroll */
+let isDown = false, startX, scrollLeft;
+favoritesGrid.addEventListener('mousedown', (e) => {
+  isDown = true;
+  favoritesGrid.classList.add('cursor-grabbing');
+  startX = e.pageX - favoritesGrid.offsetLeft;
+  scrollLeft = favoritesGrid.scrollLeft;
+});
+favoritesGrid.addEventListener('mouseleave', () => { isDown = false; favoritesGrid.classList.remove('cursor-grabbing'); });
+favoritesGrid.addEventListener('mouseup', () => { isDown = false; favoritesGrid.classList.remove('cursor-grabbing'); });
+favoritesGrid.addEventListener('mousemove', (e) => {
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - favoritesGrid.offsetLeft;
+  const walk = (x - startX) * 2; 
+  favoritesGrid.scrollLeft = scrollLeft - walk;
+});
+
+
+/* ================= responsive footer for mobile ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const sections = document.querySelectorAll(".footer-section");
+
+  sections.forEach(section => {
+    const header = section.querySelector("h3, h4");
+    const content = section.querySelector(".footer-content");
+    const toggleIcon = header.querySelector("span");
+
+    if (!content || !toggleIcon) return;
+
+    header.addEventListener("click", () => {
+      const isOpen = !content.classList.contains("hidden");
+      content.classList.toggle("hidden");
+      toggleIcon.textContent = isOpen ? "+" : "−";
+    });
+  });
+});
+
+
+/* ================= TRAILER ================= */
+function openTrailer(title) {
+  document.getElementById("trailerModal").classList.remove("hidden");
+  document.getElementById("trailerFrame").src =
+    `https://www.youtube.com/embed?listType=search&list=${title} trailer`;
+}
+
+function closeTrailer() {
+  document.getElementById("trailerModal").classList.add("hidden");
+  document.getElementById("trailerFrame").src = "";
+}
+
+/* ================= INIT ================= */
+loadFavorites();
+</script>
+
 </body>
 </html>
