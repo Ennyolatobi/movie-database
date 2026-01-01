@@ -190,10 +190,21 @@ async function loadTrailerPreview(){
 }
 
 // Play trailer in modal
-function playTrailer(title){
-  trailerContent.innerHTML = `<iframe class="w-full h-full rounded" src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(title + ' trailer')}" frameborder="0" allowfullscreen></iframe>`;
+window.playTrailer = function (title) {
+  trailerContent.innerHTML = `
+    <iframe
+      class="w-full h-full rounded"
+      src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(
+        title + " trailer"
+      )}&autoplay=1&mute=1"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  `;
   trailerModal.classList.remove("hidden");
-}
+};
+
 
 // Close modal
 closeTrailer.onclick = () => {
